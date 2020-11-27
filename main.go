@@ -2,11 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
+	"github.com/spf13/viper"
 
 	"github.com/tysonpaul89/go-gorilla-mux-example/middleware"
 	"github.com/tysonpaul89/go-gorilla-mux-example/models"
@@ -15,6 +17,15 @@ import (
 var books []models.Book
 
 func main() {
+	// Read and loads the config data
+	viper.SetConfigName("config") // name of config file (without extension)
+	viper.SetConfigType("json")
+	viper.AddConfigPath(".")
+	err := viper.ReadInConfig() // Find and read the config file
+	if err != nil {             // Handle errors reading the config file
+		panic(fmt.Errorf("Fatal error config file: %s", err))
+	}
+
 	// Getting router object.
 	r := mux.NewRouter()
 
@@ -32,7 +43,7 @@ func main() {
 
 	// Runs the server in the 8000 port.
 	// Use localhost:8000 to access the URL.
-	log.Fatal(http.ListenAndServe(":8000", r))
+	log.Fatal(http.ListenAndServe(viper.GetString("port"), r))
 }
 
 // Gets all the books
