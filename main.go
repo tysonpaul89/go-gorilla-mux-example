@@ -9,23 +9,10 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/tysonpaul89/go-gorilla-mux-example/middleware"
+	"github.com/tysonpaul89/go-gorilla-mux-example/models"
 )
 
-// Book Model
-type Book struct {
-	ID     string  `json:"id"` // <-- Struct tags. Its represent what to display when its encoded as json. {"id": "as-12"}
-	Title  string  `json:"title"`
-	Author *Author `json:"author"`
-	Price  float64 `json:"price"`
-}
-
-// Author model
-type Author struct {
-	Firstname string `json:"firstname"`
-	Lastname  string `json:"lastname"`
-}
-
-var books []Book
+var books []models.Book
 
 func main() {
 	// Getting router object.
@@ -40,8 +27,8 @@ func main() {
 	r.HandleFunc("/book/{id}", getBook).Methods("GET")
 
 	// Adding some sample data
-	books = append(books, Book{ID: uuid.UUID.String(uuid.New()), Title: "Song of Ice and Fire", Price: 20.5, Author: &Author{Firstname: "George", Lastname: "R. R. Martin"}})
-	books = append(books, Book{ID: uuid.UUID.String(uuid.New()), Title: "The Lord of the Rings", Price: 23.8, Author: &Author{Firstname: "J.R.R.", Lastname: "Tolkien"}})
+	books = append(books, models.Book{ID: uuid.UUID.String(uuid.New()), Title: "Song of Ice and Fire", Price: 20.5, Author: &models.Author{Firstname: "George", Lastname: "R. R. Martin"}})
+	books = append(books, models.Book{ID: uuid.UUID.String(uuid.New()), Title: "The Lord of the Rings", Price: 23.8, Author: &models.Author{Firstname: "J.R.R.", Lastname: "Tolkien"}})
 
 	// Runs the server in the 8000 port.
 	// Use localhost:8000 to access the URL.
@@ -63,5 +50,5 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	json.NewEncoder(w).Encode(&Book{})
+	json.NewEncoder(w).Encode(&models.Book{})
 }
