@@ -10,10 +10,11 @@ cd github.com/tysonpaul89/go-gorilla-mux-example
 go run main.go
 ```
 
-## Features
+## Using this project you can learn
 * HTTP Routing using [gorilla/mux](https://github.com/gorilla/mux) package.
 * Configuration management using [viper](https://github.com/spf13/viper) package.
 * Data storage using [scribble](https://github.com/nanobox-io/golang-scribble) package.
+* Middlewares usages.
 
 ## Routes
 ### To get all books
