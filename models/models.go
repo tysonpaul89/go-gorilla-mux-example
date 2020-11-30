@@ -28,7 +28,7 @@ type Author struct {
 	Lastname  string `json:"lastname"`
 }
 
-// GetBooks Gets all books
+// GetBooks Gets all books.
 func (b *Book) GetBooks(w http.ResponseWriter, r *http.Request) {
 	// Gets the database object
 	db := util.GetDatabaseDriver()
@@ -57,7 +57,7 @@ func (b *Book) GetBooks(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(books)
 }
 
-// GetBook Get a given book by id
+// GetBook Get a given book by id.
 func (b *Book) GetBook(w http.ResponseWriter, r *http.Request) {
 	// Gets the database object
 	db := util.GetDatabaseDriver()
@@ -69,7 +69,13 @@ func (b *Book) GetBook(w http.ResponseWriter, r *http.Request) {
 	book := Book{}
 	err := db.Read(viper.GetString("database.name"), params["id"], &book)
 	if err != nil {
-		panic(err)
+		w.WriteHeader(http.StatusNotFound)
 	}
+
 	json.NewEncoder(w).Encode(book)
+}
+
+// CreateBook Inserts new a book data into database.
+func (b *Book) CreateBook(w http.ResponseWriter, r *http.Request) {
+
 }
