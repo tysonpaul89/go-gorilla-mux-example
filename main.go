@@ -10,11 +10,12 @@ import (
 
 	// "github.com/google/uuid"
 	"github.com/gorilla/mux"
-	"github.com/nanobox-io/golang-scribble"
+	scribble "github.com/nanobox-io/golang-scribble"
 	"github.com/spf13/viper"
 
 	"github.com/tysonpaul89/go-gorilla-mux-example/middleware"
 	"github.com/tysonpaul89/go-gorilla-mux-example/models"
+	"github.com/tysonpaul89/go-gorilla-mux-example/util"
 )
 
 var db *scribble.Driver
@@ -62,21 +63,10 @@ func main() {
 	log.Fatal(http.ListenAndServe(viper.GetString("port"), r))
 }
 
-func getDatabaseDriver() *scribble.Driver {
-	// a new scribble driver, providing the directory where it will be writing to,
-	// and a qualified logger if desired
-	db, err := scribble.New(viper.GetString("database.path"), nil)
-	if err != nil {
-		panic(fmt.Errorf("Fatal error config file: %s", err))
-	}
-
-	return db
-}
-
 // Gets all the books
 func getBooks(w http.ResponseWriter, r *http.Request) {
 	// Gets the database object
-	db := getDatabaseDriver()
+	db := util.GetDatabaseDriver()
 
 	// Get all the data from the database.
 	data, err := db.ReadAll(
@@ -105,7 +95,7 @@ func getBooks(w http.ResponseWriter, r *http.Request) {
 // Get a given book by id
 func getBook(w http.ResponseWriter, r *http.Request) {
 	// Gets the database object
-	db := getDatabaseDriver()
+	db := util.GetDatabaseDriver()
 
 	// Gets the parameters passed from the URL
 	params := mux.Vars(r)
