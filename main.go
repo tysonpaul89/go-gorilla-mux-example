@@ -9,8 +9,8 @@ import (
 	scribble "github.com/nanobox-io/golang-scribble"
 	"github.com/spf13/viper"
 
-	"github.com/tysonpaul89/go-gorilla-mux-example/controller"
 	"github.com/tysonpaul89/go-gorilla-mux-example/middleware"
+	"github.com/tysonpaul89/go-gorilla-mux-example/models"
 )
 
 var db *scribble.Driver
@@ -35,7 +35,7 @@ func main() {
 	r.Use(middleware.JsonHeaderMiddleware)
 
 	// ======================== Routes Definitions =============================
-	bookObj := controller.Book{}
+	bookObj := models.Book{}
 	// Definding route and route method.
 	r.HandleFunc("/books", bookObj.GetBooks).Methods("GET")
 	r.HandleFunc("/book/{id}", bookObj.GetBook).Methods("GET")
