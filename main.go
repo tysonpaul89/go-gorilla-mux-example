@@ -39,6 +39,7 @@ func main() {
 	// Definding route and route method.
 	r.HandleFunc("/books", bookObj.GetBooks).Methods("GET")
 	r.HandleFunc("/book/{id}", bookObj.GetBook).Methods("GET")
+	r.HandleFunc("/book", bookObj.CreateBook).Methods("POST")
 
 	// ======================== Server Configs =================================
 	// Runs the server in the 8000 port.

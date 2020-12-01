@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	// External in packages
-	// "github.com/google/uuid"
+	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/spf13/viper"
 
@@ -77,5 +77,33 @@ func (b *Book) GetBook(w http.ResponseWriter, r *http.Request) {
 
 // CreateBook Inserts new a book data into database.
 func (b *Book) CreateBook(w http.ResponseWriter, r *http.Request) {
+	var book Book
+	type Response struct {
+		ID string `json:"id"`
+	}
 
+	// Response struct
+	response := Response{}
+
+	// Gets the database object
+	db := util.GetDatabaseDriver()
+
+	// Gets the book data from the request body
+	err := json.NewDecoder(r.Body).Decode(&book)
+
+	if (Book{}) != book { // Checks if the structure of the book matches its type
+		book.ID = uuid.UUID.String(uuid.New())
+		if err := db.Write(viper.GetString("database.name"), book.ID, book); err != nil {
+			panic(err)
+		}
+		response.ID = book.ID
+	} else { // Empty data handling
+		w.WriteHeader(http.StatusNotFound)
+	}
+
+	if err != nil {
+		panic(err)
+	}
+
+	json.NewEncoder(w).Encode(response)
 }
