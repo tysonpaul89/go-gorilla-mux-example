@@ -40,6 +40,8 @@ func main() {
 	r.HandleFunc("/books", bookObj.GetBooks).Methods("GET")
 	r.HandleFunc("/book/{id}", bookObj.GetBook).Methods("GET")
 	r.HandleFunc("/book", bookObj.CreateBook).Methods("POST")
+	r.HandleFunc("/book/{id}", bookObj.UpdateBook).Methods("PUT")
+	r.HandleFunc("/book/{id}", bookObj.DeleteBook).Methods("DELETE")
 
 	// ======================== Server Configs =================================
 	// Runs the server in the 8000 port.

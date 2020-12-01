@@ -107,3 +107,83 @@ func (b *Book) CreateBook(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(response)
 }
+
+// UpdateBook Updates book data by id
+func (b *Book) UpdateBook(w http.ResponseWriter, r *http.Request) {
+	type Response struct {
+		ID      string `json:"id"`
+		Message string `json:"message"`
+	}
+
+	// Response struct
+	response := Response{}
+
+	// Gets the database object
+	db := util.GetDatabaseDriver()
+
+	// Gets the parameters passed from the URL
+	params := mux.Vars(r)
+
+	// Gets an item from the database
+	book := Book{}
+	err := db.Read(viper.GetString("database.name"), params["id"], &book)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		response.Message = "Book not found!"
+	} else {
+		// Gets the book data from the request body
+		newBook := Book{}
+		err := json.NewDecoder(r.Body).Decode(&newBook)
+
+		if err != nil {
+			panic(err)
+		}
+
+		if (Book{}) != newBook { // Checks if the structure of the book matches its type
+			newBook.ID = book.ID
+			// Replaces the old data with new one.
+			if err := db.Write(viper.GetString("database.name"), book.ID, newBook); err != nil {
+				panic(err)
+			}
+			response.ID = book.ID
+		} else { // Empty data handling
+			w.WriteHeader(http.StatusNotFound)
+			response.Message = "Book data received is incomplete."
+		}
+	}
+
+	json.NewEncoder(w).Encode(response)
+}
+
+// DeleteBook Delete a book by id
+func (b *Book) DeleteBook(w http.ResponseWriter, r *http.Request) {
+	type Response struct {
+		Message string `json:"message"`
+	}
+
+	// Response struct
+	response := Response{}
+
+	// Gets the database object
+	db := util.GetDatabaseDriver()
+
+	// Gets the parameters passed from the URL
+	params := mux.Vars(r)
+
+	// Gets an item from the database
+	book := Book{}
+	err := db.Read(viper.GetString("database.name"), params["id"], &book)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		response.Message = "Book not found!"
+	} else {
+		// Deletes the book
+		if err := db.Delete(viper.GetString("database.name"), params["id"]); err != nil {
+			panic(err)
+		}
+
+		response.Message = "Book deleted successfully."
+	}
+
+	json.NewEncoder(w).Encode(response)
+}
